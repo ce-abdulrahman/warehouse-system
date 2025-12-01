@@ -1,0 +1,35 @@
+resources/views/
+├── layout/
+│   └── app.blade.php
+├── components/
+│   ├── header.blade.php
+│   ├── sidebar.blade.php
+│   └── footer.blade.php
+└── crud/
+    ├── items/
+    │   ├── index.blade.php
+    │   ├── create.blade.php
+    │   ├── edit.blade.php
+    │   └── show.blade.php
+    ├── warehouses/
+    │   ├── index.blade.php
+    │   ├── create.blade.php
+    │   ├── edit.blade.php
+    │   └── show.blade.php
+    ├── suppliers/
+    │   ├── index.blade.php
+    │   ├── create.blade.php
+    │   ├── edit.blade.php
+    │   └── show.blade.php
+    ├── movements/
+    │   ├── index.blade.php
+    │   ├── create.blade.php
+    │   ├── edit.blade.php
+    │   └── show.blade.php
+    ├── users/
+    │   ├── index.blade.php
+    │   ├── create.blade.php
+    │   ├── edit.blade.php
+    │   └── show.blade.php
+    └── settings/
+        └── index.blade.php

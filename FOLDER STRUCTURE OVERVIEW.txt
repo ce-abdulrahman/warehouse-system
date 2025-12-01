@@ -1,0 +1,117 @@
+├── .env                          # Database & System Config
+├── composer.json                 # Backend Dependencies
+├── package.json                  # Frontend Dependencies (Bootstrap/jQuery)
+├── vite.config.js                # Asset Bundling Config
+├── artisan                       # CLI Command Tool
+│
+├── app/
+│   ├── Http/
+│   │   ├── Controllers/
+│   │   │   ├── Controller.php
+│   │   │   ├── ProfileController.php      # (Breeze Default)
+│   │   │   ├── ★ SettingsController.php   # System settings (Logo, Name)
+│   │   │   ├── ★ ItemController.php       # Item CRUD
+│   │   │   ├── ★ WarehouseController.php  # Warehouse CRUD
+│   │   │   ├── ★ SupplierController.php   # Supplier CRUD
+│   │   │   ├── ★ StockMovementController.php # IN/OUT Logic
+│   │   │   ├── ★ UserController.php       # User Role Management
+│   │   │   └── Auth/
+│   │   │       ├── AuthenticatedSessionController.php
+│   │   │       └── (Other Breeze Auth Controllers...)
+│   │   │
+│   │   ├── Middleware/           # Auth & Role Middleware
+│   │   │
+│   │   └── Requests/             # Form Validation Rules
+│   │       ├── ★ StoreItemRequest.php
+│   │       ├── ★ UpdateItemRequest.php
+│   │       ├── ★ StoreStockMovementRequest.php
+│   │       └── ProfileUpdateRequest.php
+│   │
+│   └── Models/ 
+│       ├── User.php
+│       ├── ★ Setting.php         # Settings Table Model
+│       ├── ★ Item.php            # Items Table Model
+│       ├── ★ Warehouse.php       # Warehouses Table Model
+│       ├── ★ Supplier.php        # Suppliers Table Model
+│       └── ★ StockMovement.php   # Ledger Table Model
+│
+├── database/
+│   ├── factories/                # Model Factories for Testing
+│   ├── seeders/
+│   │   ├── DatabaseSeeder.php
+│   │   ├── ★ ItemSeeder.php
+│   │   ├── ★ WarehouseSeeder.php
+│   │   └── ★ AdminUserSeeder.php
+│   │
+│   └── migrations/
+│       ├── 2014_10_12_000000_create_users_table.php
+│       ├── 2014_10_12_100000_create_password_reset_tokens_table.php
+│       ├── ★ 2024_01_01_000001_create_settings_table.php
+│       ├── ★ 2024_01_01_000002_create_warehouses_table.php
+│       ├── ★ 2024_01_01_000003_create_suppliers_table.php
+│       ├── ★ 2024_01_01_000004_create_items_table.php
+│       └── ★ 2024_01_01_000005_create_stock_movements_table.php
+│
+├── public/                       # Web Root
+│   ├── css/                      # Compiled CSS
+│   ├── js/                       # Compiled JS
+│   └── storage/                  # Symlink to storage/app/public (Logos/Avatars)
+│
+├── resources/
+│   ├── css/
+│   │   ├── app.css               # Import Bootstrap 5 CSS here
+│   │   └── custom.css            # Custom Warehouse Styles
+│   │
+│   ├── js/
+│   │   ├── app.js                # Import Bootstrap 5 JS & jQuery here
+│   │   └── ★ stock-logic.js      # Custom JS for Stock Calculation
+│   │
+│   └── views/
+│       ├── layouts/
+│       │   ├── app.blade.php     # ★ Main Layout (Sidebar + Navbar)
+│       │   ├── guest.blade.php   # Login Layout
+│       │   └── navigation.blade.php
+│       │
+│       ├── auth/                 # (Breeze Views: Login, Register...)
+│       │
+│       ├── components/           # (Blade Components: Buttons, Inputs)
+│       │
+│       ├── dashboard.blade.php   # ★ Main Dashboard (Cards/Charts)
+│       ├── profile/
+│       │   ├── edit.blade.php
+│       │   └── partials/
+│       │
+│       ├── items/                # ★ Item CRUD
+│       │   ├── index.blade.php
+│       │   ├── create.blade.php
+│       │   ├── edit.blade.php
+│       │   └── show.blade.php
+│       │
+│       ├── warehouses/           # ★ Warehouse CRUD
+│       │   ├── index.blade.php
+│       │   ├── create.blade.php
+│       │   ├── edit.blade.php
+│       │   └── show.blade.php
+│       │
+│       ├── suppliers/            # ★ Supplier CRUD
+│       │   ├── index.blade.php
+│       │   ├── create.blade.php
+│       │   └── edit.blade.php
+│       │
+│       ├── movements/            # ★ Stock Movement Module
+│       │   ├── index.blade.php   # History Table
+│       │   ├── create.blade.php  # IN/OUT Form
+│       │   └── show.blade.php    # Receipt/Detail View
+│       │
+│       ├── settings/             # ★ Settings Module
+│       │   └── index.blade.php
+│       │
+│       └── users/                # ★ User Management (Admin only)
+│           ├── index.blade.php
+│           └── edit.blade.php
+│
+└── routes/
+    ├── web.php                   # ★ Main Application Routes
+    ├── api.php                   # API Routes (for external integration)
+    ├── auth.php                  # Breeze Authentication Routes
+    └── console.php

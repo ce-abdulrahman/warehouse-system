@@ -1,0 +1,175 @@
+/* public/css/custom.css */
+
+/* --- Layout & Sidebar --- */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow-x: hidden;
+}
+
+#wrapper {
+    overflow-x: hidden;
+}
+
+.sidebar-heading {
+    padding: 0.875rem 1.25rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.list-group-item {
+    border: none;
+    padding: 15px 20px;
+}
+
+.list-group-item.active {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+    font-weight: 600;
+}
+
+.list-group-item:hover {
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+.sidebar-icon {
+    width: 20px;
+    text-align: center;
+    margin-right: 10px;
+}
+
+/* --- Dashboard Cards --- */
+.card-counter {
+    box-shadow: 2px 2px 10px #DADADA;
+    margin: 5px;
+    padding: 20px 10px;
+    background-color: #fff;
+    height: 100px;
+    border-radius: 5px;
+    transition: .3s linear all;
+}
+
+.card-counter:hover {
+    box-shadow: 4px 4px 20px #DADADA;
+    transform: scale(1.02);
+}
+
+.card-counter.primary { background-color: #007bff; color: #FFF; }
+.card-counter.success { background-color: #198754; color: #FFF; }
+.card-counter.danger  { background-color: #dc3545; color: #FFF; }
+.card-counter.info    { background-color: #0dcaf0; color: #FFF; }
+
+.card-counter i {
+    font-size: 5em;
+    opacity: 0.2;
+    position: absolute;
+    right: 15px;
+    top: 15px;
+}
+
+.card-counter .count-numbers {
+    position: absolute;
+    right: 35px;
+    top: 20px;
+    font-size: 32px;
+    display: block;
+}
+
+.card-counter .count-name {
+    position: absolute;
+    right: 35px;
+    top: 65px;
+    font-style: italic;
+    text-transform: capitalize;
+    opacity: 0.8;
+    display: block;
+    font-size: 18px;
+}
+
+/* --- Status Badges --- */
+.badge-stock-low { background-color: #dc3545; } /* Red */
+.badge-stock-med { background-color: #ffc107; color: #000; } /* Yellow */
+.badge-stock-ok  { background-color: #198754; } /* Green */
+
+/* Dashboard Wrapper */
+#wrapper {
+    overflow-x: hidden;
+    display: flex;
+}
+
+#sidebar-wrapper {
+    min-height: 100vh;
+    margin-left: -15rem;
+    transition: margin .25s ease-out;
+    background-color: #212529; /* Dark Sidebar */
+}
+
+#sidebar-wrapper .sidebar-heading {
+    padding: 0.875rem 1.25rem;
+    font-size: 1.2rem;
+    color: white;
+}
+
+#sidebar-wrapper .list-group {
+    width: 15rem;
+}
+
+#page-content-wrapper {
+    min-width: 100vw;
+}
+
+body.sb-sidenav-toggled #wrapper #sidebar-wrapper {
+    margin-left: 0;
+}
+
+/* Sidebar Links */
+.list-group-item {
+    border: none;
+    padding: 1rem 1.25rem;
+    background-color: #212529;
+    color: #cfd2d6;
+}
+
+.list-group-item:hover {
+    background-color: #343a40;
+    color: #fff;
+}
+
+.list-group-item.active {
+    background-color: #0d6efd;
+    color: #fff;
+    font-weight: bold;
+}
+
+/* RTL Support */
+html[dir="rtl"] #sidebar-wrapper {
+    margin-left: 0;
+    margin-right: -15rem;
+}
+html[dir="rtl"] body.sb-sidenav-toggled #wrapper #sidebar-wrapper {
+    margin-right: 0;
+}
+
+@media (min-width: 768px) {
+    #sidebar-wrapper {
+        margin-left: 0;
+    }
+    #page-content-wrapper {
+        min-width: 0;
+        width: 100%;
+    }
+    html[dir="rtl"] #sidebar-wrapper {
+        margin-right: 0;
+    }
+}
+
+/* Card Stats */
+.stat-card {
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+}
+.stat-card:hover {
+    transform: translateY(-5px);
+}

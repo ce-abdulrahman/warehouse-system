@@ -1,0 +1,25 @@
+# 1. Create Project
+composer create-project laravel/laravel warehouse-system "10.*"
+cd warehouse-system
+
+# 2. Configure Database (.env)
+# Open .env and set: DB_DATABASE=warehouse_db, DB_USERNAME=root, DB_PASSWORD=
+
+# 3. Install Laravel Breeze (Authentication with Blade)
+composer require laravel/breeze --dev
+php artisan breeze:install blade
+# (Select "No" for dark mode support if you want standard Bootstrap style base)
+
+# 4. Install Frontend Dependencies (Bootstrap 5 & jQuery)
+npm install bootstrap @popperjs/core jquery sass sass-loader
+
+# 5. Configure Vite (vite.config.js)
+# Ensure you import bootstrap in resources/js/app.js
+
+# 6. Generate Core Artifacts (We will modify these later)
+php artisan make:model Setting -mcr
+php artisan make:model Item -mcr
+php artisan make:model Warehouse -mcr
+php artisan make:model Supplier -mcr
+php artisan make:model StockMovement -mcr
+php artisan make:controller ProfileController --resource
