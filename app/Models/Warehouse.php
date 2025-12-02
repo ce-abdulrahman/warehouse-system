@@ -15,6 +15,7 @@ class Warehouse extends Model
         'location',
         'contact_number',
         'is_active', // boolean: 1=active, 0=inactive
+        'capacity',
     ];
 
     protected $casts = [

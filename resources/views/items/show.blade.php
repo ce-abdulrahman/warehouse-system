@@ -1,158 +1,195 @@
-
-
 @extends('layouts.app')
 
 @section('title', 'Item Details')
 
 @section('content')
-<div class="container-fluid">
-    <!-- Page Header -->
+
+<div class="container-xxl">
+
+    {{-- Header --}}
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 mb-0">Item Details</h1>
+        <h4 class="fw-bold">{{ $item->name }}</h4>
+
         <div>
-            <a href="{{ route('items.edit', 1) }}" class="btn btn-secondary">
-                <i class="bi bi-pencil me-2"></i>Edit
+            <a href="{{ route('items.edit', $item->id) }}" class="btn btn-warning me-2">
+                <i data-feather="edit"></i> Edit
             </a>
-            <a href="{{ route('items.index') }}" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left me-2"></i>Back to Items
+
+            <a href="{{ route('items.index') }}" class="btn btn-secondary">
+                <i data-feather="arrow-left"></i> Back
             </a>
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-lg-8">
-            <!-- Item Information Card -->
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">Basic Information</h5>
+
+    <div class="row g-4">
+
+        {{-- LEFT SIDE --}}
+        <div class="col-md-4">
+
+            {{-- Image --}}
+            <div class="card shadow-sm">
+                <div class="card-header fw-bold bg-white">
+                    <i data-feather="image"></i> Item Image
                 </div>
+
+                <div class="card-body text-center">
+                    <img src="{{ $item->image_url }}"
+                         class="rounded mb-3"
+                         width="200"
+                         style="border:1px solid #eee;padding:8px;background:#fafafa;">
+                </div>
+            </div>
+
+            {{-- Stock --}}
+            <div class="card shadow-sm mt-3">
+                <div class="card-header fw-bold bg-white">
+                    <i data-feather="box"></i> Stock Summary
+                </div>
+
                 <div class="card-body">
+
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Minimum Stock</span>
+                        <strong>{{ $item->min_stock }}</strong>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Current Stock</span>
+                        <strong>{{ $item->current_stock }}</strong>
+                    </div>
+
+                    @php
+                        $total_in = $item->movements()->where('movement_type', 'IN')->sum('quantity');
+                        $total_out = $item->movements()->where('movement_type', 'OUT')->sum('quantity');
+                    @endphp
+                    <div class="d-flex justify-content-between mb-1">
+                        <span class="text-success">Total IN</span>
+                        <strong>{{ $total_in }}</strong>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <span class="text-danger">Total OUT</span>
+                        <strong>{{ $total_out }}</strong>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+
+
+        {{-- RIGHT SIDE --}}
+        <div class="col-md-8">
+
+            <div class="card shadow-sm">
+                <div class="card-header fw-bold bg-white">
+                    <i data-feather="info"></i> Item Information
+                </div>
+
+                <div class="card-body">
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="text-muted">Item Name</label>
+                            <p class="fw-semibold">{{ $item->name }}</p>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="text-muted">SKU</label>
+                            <p class="fw-semibold">{{ $item->sku }}</p>
+                        </div>
+                    </div>
+
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="text-muted">Warehouse</label>
+                            <p class="fw-semibold">{{ $item->warehouse->name ?? '' }}</p>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="text-muted">Supplier</label>
+                            <p class="fw-semibold">{{ $item->supplier->name ?? '' }}</p>
+                        </div>
+                    </div>
+
+
+                    @if($item->description)
+                    <div class="mb-3">
+                        <label class="text-muted">Description</label>
+                        <p>{{ $item->description }}</p>
+                    </div>
+                    @endif
+
+
                     <div class="row">
                         <div class="col-md-6">
-                            <table class="table table-borderless">
-                                <tr>
-                                    <th width="40%">Item Name:</th>
-                                    <td>{{ $item->name }}</td>
-                                </tr>
-                                <tr>
-                                    <th>SKU:</th>
-                                    <td>{{ $item->sku }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Category:</th>
-                                    <td>{{ $item->category }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Price:</th>
-                                    <td>{{ $item->price }}</td>
-                                </tr>
-                            </table>
+                            <label class="text-muted">Created At</label>
+                            <p class="fw-semibold">{{ $item->created_at->format('Y-m-d H:i') }}</p>
                         </div>
+
                         <div class="col-md-6">
-                            <table class="table table-borderless">
-                                <tr>
-                                    <th width="40%">Current Stock:</th>
-                                    <td>{{ $item->current_stock }} units</td>
-                                </tr>
-                                <tr>
-                                    <th>Min Stock Level:</th>
-                                    <td>{{ $item->min_stock_level }} units</td>
-                                </tr>
-                                <tr>
-                                    <th>Status:</th>
-                                    <td><span class="badge bg-success">{{ $item->status }}</span></td>
-                                </tr>
-                                <tr>
-                                    <th>Primary Supplier:</th>
-                                    <td>{{ $item->supplier->name ?? 'N/A' }}</td>
-                                </tr>
-                            </table>
+                            <label class="text-muted">Last Updated</label>
+                            <p class="fw-semibold">{{ $item->updated_at->format('Y-m-d H:i') }}</p>
                         </div>
                     </div>
 
-                    <div class="mt-3">
-                        <h6>Description:</h6>
-                        <p class="text-muted">{{ $item->description }}</p>
-                    </div>
                 </div>
             </div>
 
-            <!-- Stock History -->
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">Recent Stock Movements</h5>
+
+            {{-- Movement History Table --}}
+            <div class="card shadow-sm mt-4">
+                <div class="card-header fw-bold bg-white">
+                    <i data-feather="activity"></i> Movement History
                 </div>
+
                 <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-sm table-bordered">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Type</th>
-                    <th>Qty</th>
-                    <th>Warehouse</th>
-                    <th>Balance</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($item->movements()->latest()->take(10)->get() as $move)
-                <tr>
-                    <td>{{ $move->created_at->format('Y-m-d H:i') }}</td>
-                    <td><span class="badge {{ $move->type == 'in' ? 'bg-success' : 'bg-danger' }}">{{ strtoupper($move->type) }}</span></td>
-                    <td>{{ $move->quantity }}</td>
-                    <td>{{ $move->warehouse->name }}</td>
-                    <td>{{ $move->after_stock }}</td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-                    </div>
+
+                    <table class="table table-striped">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Date</th>
+                                <th>Type</th>
+                                <th>Qty</th>
+                                <th>Warehouse</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach($movements as $m)
+                            <tr>
+                                <td>{{ $m->created_at->format('Y-m-d') }}</td>
+                                <td>
+                                    @if($m->movement_type == 'IN')
+                                        <span class="badge bg-success">IN</span>
+                                    @else
+                                        <span class="badge bg-danger">OUT</span>
+                                    @endif
+                                </td>
+                                <td>{{ $m->quantity }}</td>
+                                <td>{{ $m->warehouse->name }}</td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+
                 </div>
             </div>
+
+
         </div>
 
-        <div class="col-lg-4">
-            <!-- Quick Actions -->
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">Quick Actions</h5>
-                </div>
-                <div class="card-body">
-                    <div class="d-grid gap-2">
-                        <button class="btn btn-outline-primary">
-                            <i class="bi bi-arrow-down-circle me-2"></i>Stock In
-                        </button>
-                        <button class="btn btn-outline-warning">
-                            <i class="bi bi-arrow-up-circle me-2"></i>Stock Out
-                        </button>
-                        <button class="btn btn-outline-info">
-                            <i class="bi bi-graph-up me-2"></i>View Report
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Stock Alert -->
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">Stock Status</h5>
-                </div>
-                <div class="card-body">
-                    <div class="text-center">
-                        <div class="mb-3">
-                            <span class="h2 text-primary">{{ $item->current_stock }}</span>
-                            <span class="text-muted">/ {{ $item->min_stock_level }} units</span>
-                        </div>
-                        <div class="progress mb-3" style="height: 20px;">
-                            <div class="progress-bar bg-success" style="width: 30%;">30%</div>
-                        </div>
-                        <p class="text-success">
-                            <i class="bi bi-check-circle me-2"></i>Stock level is good
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
+
 </div>
+
+@endsection
+
+@section('scripts')
+<script>
+    feather.replace();
+</script>
 @endsection

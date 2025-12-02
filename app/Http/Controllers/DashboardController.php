@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 use App\Models\Item;
 use App\Models\StockMovement;
+use App\Models\Warehouse;
 
 class DashboardController extends Controller
 {
@@ -91,6 +92,38 @@ class DashboardController extends Controller
             ->limit(30)
             ->get();
 
+        $warehouse_capacity_raw = DB::table('warehouses as w')
+            ->leftJoin('stock_movements as sm', 'sm.warehouse_id', '=', 'w.id')
+            ->select(
+                'w.id',
+                'w.name',
+                'w.capacity',
+                DB::raw("
+                    COALESCE(SUM(CASE WHEN sm.movement_type='IN' THEN sm.quantity END), 0)
+                    -
+                    COALESCE(SUM(CASE WHEN sm.movement_type='OUT' THEN sm.quantity END), 0)
+                    AS current_stock
+                ")
+            )
+            ->groupBy('w.id', 'w.name', 'w.capacity')
+            ->get();
+
+        // compute percentage in PHP (avoid division by zero)
+        $warehouse_capacity = $warehouse_capacity_raw->map(function ($row) {
+            $capacity = (int) $row->capacity;
+            $current  = (int) $row->current_stock;
+
+            $percent = $capacity > 0
+                ? round(($current / $capacity) * 100, 1)
+                : 0;
+
+            return (object) [
+                'name'          => $row->name,
+                'capacity'      => $capacity,
+                'current_stock' => $current,
+                'percent'       => max(0, min($percent, 100)), // clamp 0–100
+            ];
+        });
 
 
         return view('dashboard', [
@@ -102,6 +135,7 @@ class DashboardController extends Controller
             'top_items'        => $top_items,
             'daily_summary'    => $daily_summary,
             'stock_flow'       => $stock_flow,
+            'warehouse_capacity' => $warehouse_capacity,
         ]);
     }
 }

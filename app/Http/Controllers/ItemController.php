@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Item;
 use App\Models\Supplier;
+use App\Models\Warehouse;
 use Illuminate\Http\Request;
 
 class ItemController extends Controller
@@ -12,7 +13,9 @@ class ItemController extends Controller
     {
         // Eager load supplier to reduce DB queries
         $items = Item::with('supplier')->latest()->paginate(10);
-        return view('items.index', compact('items'));
+        $warehouses = Warehouse::all();
+        $suppliers = Supplier::all();
+        return view('items.index', compact('items', 'warehouses', 'suppliers'));
     }
 
     public function create()
@@ -55,6 +58,14 @@ class ItemController extends Controller
         $item->update($request->all());
 
         return redirect()->route('items.index')->with('success', 'Item updated successfully.');
+    }
+
+    public function show(Item $item)
+    {
+        // Load related supplier and movements for detailed view
+        $item->load('supplier', 'movements');
+        $movements = $item->movements()->with('warehouse')->latest()->get();
+        return view('items.show', compact('item', 'movements'));
     }
 
     public function destroy(Item $item)

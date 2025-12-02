@@ -20,6 +20,6 @@ class Supplier extends Model
     // Relationship: A supplier provides many items
     public function items()
     {
-        return $this->hasMany(Item::class);
+        return $this->belongsTo(Item::class);
     }
 }

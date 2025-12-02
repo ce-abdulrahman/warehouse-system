@@ -17,6 +17,8 @@ class Item extends Model
         'description',
         'stock',
         'unit', // e.g., pcs, kg, box
+        'price',
+        'min_stock',
     ];
 
     // Relationship: An item belongs to one Supplier
@@ -29,5 +31,11 @@ class Item extends Model
     public function movements()
     {
         return $this->hasMany(StockMovement::class);
+    }
+
+    // Relationship: An item belongs to one Warehouse
+    public function warehouse()
+    {
+        return $this->belongsTo(Warehouse::class);
     }
 }

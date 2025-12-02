@@ -1,98 +1,130 @@
 @extends('layouts.app')
 
-@section('title', 'Items Management')
+@section('title', 'Items')
 
 @section('content')
-<div class="container-fluid">
-    <!-- Page Header -->
+
+<div class="container-xxl">
+
+    {{-- Page Header --}}
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 mb-0">Items Management</h1>
+        <h4 class="fw-bold">Items List</h4>
         <a href="{{ route('items.create') }}" class="btn btn-primary">
-            <i class="bi bi-plus-circle me-2"></i>Add New Item
+            <i data-feather="plus"></i> Add New Item
         </a>
     </div>
 
-    <!-- Search and Filters -->
-    <div class="card mb-4">
+    {{-- Filters --}}
+    <div class="card mb-3">
         <div class="card-body">
+
             <div class="row g-3">
-                <div class="col-md-6">
-                    <input type="text" class="form-control table-search" placeholder="Search items...">
-                </div>
+
+                {{-- Global Search --}}
                 <div class="col-md-3">
-                    <select class="form-select">
-                        <option value="">All Categories</option>
-                        <option value="electronics">Electronics</option>
-                        <option value="furniture">Furniture</option>
-                        <option value="office">Office Supplies</option>
+                    <label class="form-label">Search</label>
+                    <input type="text" id="search-items" class="form-control" placeholder="Search items...">
+                </div>
+
+                {{-- Filter by Warehouse --}}
+                <div class="col-md-3">
+                    <label class="form-label">Warehouse</label>
+                    <select id="filter-warehouse" class="form-select">
+                        <option value="">All Warehouses</option>
+                        @foreach($warehouses as $w)
+                            <option value="{{ $w->name }}">{{ $w->name }}</option>
+                        @endforeach
                     </select>
                 </div>
+
+                {{-- Filter by Supplier --}}
                 <div class="col-md-3">
-                    <select class="form-select">
-                        <option value="">All Status</option>
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
+                    <label class="form-label">Supplier</label>
+                    <select id="filter-supplier" class="form-select">
+                        <option value="">All Suppliers</option>
+                        @foreach($suppliers as $s)
+                            <option value="{{ $s->name }}">{{ $s->name }}</option>
+                        @endforeach
                     </select>
                 </div>
+
+                {{-- Date Range Filter --}}
+                <div class="col-md-3">
+                    <label class="form-label">Created From</label>
+                    <input type="date" id="filter-date-start" class="form-control">
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Created To</label>
+                    <input type="date" id="filter-date-end" class="form-control">
+                </div>
+
             </div>
+
         </div>
     </div>
 
-    <!-- Items Table -->
+    {{-- DataTable --}}
     <div class="card">
         <div class="card-body">
-            <div class="table-responsive">
 
-                <table class="table table-hover searchable-table">
+            <table id="datatable-buttons" class="table table-striped table-bordered data-table" style="width:100%">
                 <thead class="table-light">
                     <tr>
-                        <th>SKU</th>
+                        <th>Created</th>
                         <th>Name</th>
+                        <th>SKU</th>
+                        <th>Warehouse</th>
                         <th>Supplier</th>
-                        <th>Stock</th>
-                        <th>Actions</th>
+                        <th>Min Stock</th>
+                        <th width="150">Actions</th>
                     </tr>
                 </thead>
+
                 <tbody>
                     @foreach($items as $item)
-                        <tr>
-                            <td>{{ $item->sku }}</td>
-                            <td>{{ $item->name }}</td>
-                            <td>{{ $item->supplier->name ?? '-' }}</td>
-                            <td>
-                                <span class="badge {{ $item->stock < 10 ? 'bg-danger' : 'bg-success' }}">
-                                    {{ $item->stock }} {{ $item->unit }}
-                                </span>
-                            </td>
-                            <td>
-                                <a href="{{ route('items.edit', $item->id) }}" class="btn btn-sm btn-info text-white">Edit</a>
-                                <form action="{{ route('items.destroy', $item->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this item?')">
-                                    @csrf @method('DELETE')
-                                    <button class="btn btn-sm btn-danger">Delete</button>
-                                </form>
-                            </td>
-                        </tr>
+                    <tr>
+                        <td>{{ $item->created_at->format('Y-m-d') }}</td>
+
+                        <td>{{ $item->name }}</td>
+                        <td>{{ $item->sku }}</td>
+
+                        <td>{{ $item->warehouse->name ?? '' }}</td>
+                        <td>{{ $item->supplier->name ?? '' }}</td>
+
+                        <td>{{ $item->min_stock }}</td>
+
+                        <td>
+                            <a href="{{ route('items.show', $item->id) }}" class="btn btn-sm btn-info">
+                                <i data-feather="eye"></i>
+                            </a>
+
+                            <a href="{{ route('items.edit', $item->id) }}" class="btn btn-sm btn-warning">
+                                <i data-feather="edit"></i>
+                            </a>
+
+                            <form action="{{ route('items.destroy', $item->id) }}" method="POST"
+                                  class="d-inline-block"
+                                  onsubmit="return confirm('Are you sure?');">
+                                @csrf
+                                @method('DELETE')
+                                <button class="btn btn-sm btn-danger">
+                                    <i data-feather="trash"></i>
+                                </button>
+                            </form>
+                        </td>
+
+                    </tr>
                     @endforeach
                 </tbody>
-            </table>
-            {{ $items->links() }}
-            </div>
 
-            <!-- Pagination -->
-            <nav aria-label="Page navigation">
-                <ul class="pagination justify-content-center">
-                    <li class="page-item disabled">
-                        <a class="page-link" href="#">Previous</a>
-                    </li>
-                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                        <a class="page-link" href="#">Next</a>
-                    </li>
-                </ul>
-            </nav>
+            </table>
+
         </div>
     </div>
+
 </div>
+
 @endsection
+
+

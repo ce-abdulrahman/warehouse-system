@@ -106,19 +106,37 @@
                         </div>
                     </div>
 
-                    <div class="col-md-12 mt-4">
-                        <div class="card">
-                            <div class="card-header d-flex align-items-center">
-                                <div class="card-title-icon me-2">
-                                    <i data-feather="activity"></i>
+                    <div class="row mt-4">
+
+                        <div class="col-md-6 col-xl-3">
+                            <div class="card">
+                                <div class="card-header d-flex align-items-center">
+                                    <div class="card-title-icon me-2">
+                                        <i data-feather="activity"></i>
+                                    </div>
+                                    <h5 class="card-title mb-0">Stock Flow (IN vs OUT)</h5>
                                 </div>
-                                <h5 class="card-title mb-0">Stock Flow (IN vs OUT)</h5>
+                                <div class="card-body">
+                                    <div id="stock-flow-chart" class="apex-charts"></div>
+                                </div>
                             </div>
-                            <div class="card-body">
-                                <div id="stock-flow-chart" class="apex-charts"></div>
+                        </div>
+
+                        <div class="col-md-6 col-xl-3">
+                            <div class="card">
+                                <div class="card-header d-flex align-items-center">
+                                    <div class="card-title-icon me-2">
+                                        <i data-feather="database"></i>
+                                    </div>
+                                    <h5 class="card-title mb-0">Warehouse Capacity Usage</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div id="warehouse-capacity-chart" class="apex-charts"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
+
 
 
                 </div>
@@ -275,95 +293,188 @@
         monthlyChart.render();
 
         // ---------------------------------
-    // STOCK FLOW CHART (IN vs OUT)
-    // ---------------------------------
+        // STOCK FLOW CHART (IN vs OUT)
+        // ---------------------------------
 
-    var flowDays = [
-        @foreach($stock_flow as $sf)
-            "{{ $sf->day }}",
-        @endforeach
-    ];
+        var flowDays = [
+            @foreach ($stock_flow as $sf)
+                "{{ $sf->day }}",
+            @endforeach
+        ];
 
-    var flowIn = [
-        @foreach($stock_flow as $sf)
-            {{ $sf->total_in }},
-        @endforeach
-    ];
+        var flowIn = [
+            @foreach ($stock_flow as $sf)
+                {{ $sf->total_in }},
+            @endforeach
+        ];
 
-    var flowOut = [
-        @foreach($stock_flow as $sf)
-            {{ $sf->total_out }},
-        @endforeach
-    ];
+        var flowOut = [
+            @foreach ($stock_flow as $sf)
+                {{ $sf->total_out }},
+            @endforeach
+        ];
 
-    var stockFlowOptions = {
-        chart: {
-            type: 'bar',
-            height: 360,
-            stacked: false,
-            toolbar: { show: false }
-        },
-
-        series: [
-            {
-                name: "Stock IN",
-                type: 'column',
-                data: flowIn
+        var stockFlowOptions = {
+            chart: {
+                type: 'bar',
+                height: 360,
+                stacked: false,
+                toolbar: {
+                    show: false
+                }
             },
-            {
-                name: "Stock OUT",
-                type: 'column',
-                data: flowOut
+
+            series: [{
+                    name: "Stock IN",
+                    type: 'column',
+                    data: flowIn
+                },
+                {
+                    name: "Stock OUT",
+                    type: 'column',
+                    data: flowOut
+                },
+                {
+                    name: "Flow Trend",
+                    type: 'line',
+                    data: flowIn.map((value, index) => value - flowOut[index])
+                }
+            ],
+
+            stroke: {
+                width: [0, 0, 3],
+                curve: 'smooth'
             },
-            {
-                name: "Flow Trend",
-                type: 'line',
-                data: flowIn.map((value, index) => value - flowOut[index])
+
+            fill: {
+                opacity: [0.9, 0.9, 1]
+            },
+
+            colors: [
+                '#0d6efd', // IN (blue)
+                '#dc3545', // OUT (red)
+                '#20c997' // Trend (green)
+            ],
+
+            xaxis: {
+                categories: flowDays,
+                labels: {
+                    rotate: -45
+                }
+            },
+
+            dataLabels: {
+                enabled: false
+            },
+
+            legend: {
+                position: "top",
+            },
+
+            tooltip: {
+                shared: true,
+                intersect: false,
             }
-        ],
+        };
 
-        stroke: {
-            width: [0, 0, 3],
-            curve: 'smooth'
-        },
+        var flowChart = new ApexCharts(
+            document.querySelector("#stock-flow-chart"),
+            stockFlowOptions
+        );
 
-        fill: {
-            opacity: [0.9, 0.9, 1]
-        },
+        flowChart.render();
 
-        colors: [
-            '#0d6efd', // IN (blue)
-            '#dc3545', // OUT (red)
-            '#20c997'  // Trend (green)
-        ],
+        // ==============================
+        //  WAREHOUSE CAPACITY CHART
+        // ==============================
 
-        xaxis: {
-            categories: flowDays,
-            labels: {
-                rotate: -45
+        var whNames = [
+            @foreach ($warehouse_capacity as $w)
+                "{{ $w->name }}",
+            @endforeach
+        ];
+
+        var whPercentUsed = [
+            @foreach ($warehouse_capacity as $w)
+                {{ $w->percent }},
+            @endforeach
+        ];
+
+        var whCurrent = [
+            @foreach ($warehouse_capacity as $w)
+                {{ $w->current_stock }},
+            @endforeach
+        ];
+
+        var whCapacity = [
+            @foreach ($warehouse_capacity as $w)
+                {{ $w->capacity }},
+            @endforeach
+        ];
+
+        var warehouseCapacityOptions = {
+            chart: {
+                type: 'bar',
+                height: 360,
+                toolbar: {
+                    show: false
+                }
+            },
+            plotOptions: {
+                bar: {
+                    horizontal: true,
+                    columnWidth: '50%',
+                    dataLabels: {
+                        position: 'right'
+                    }
+                }
+            },
+            colors: ['#0d6efd'],
+            series: [{
+                name: 'Capacity Used (%)',
+                data: whPercentUsed
+            }],
+            xaxis: {
+                categories: whNames,
+                max: 100,
+                labels: {
+                    formatter: function(val) {
+                        return val + '%';
+                    }
+                }
+            },
+            dataLabels: {
+                enabled: true,
+                formatter: function(val, opts) {
+                    var idx = opts.dataPointIndex;
+                    return val + '% (' + whCurrent[idx] + '/' + whCapacity[idx] + ')';
+                },
+                style: {
+                    fontSize: '12px'
+                }
+            },
+            tooltip: {
+                y: {
+                    formatter: function(val, opts) {
+                        var idx = opts.dataPointIndex;
+                        return val + '% used — ' +
+                            whCurrent[idx] + ' / ' + whCapacity[idx] + ' units';
+                    }
+                }
+            },
+            grid: {
+                borderColor: '#f1f1f1'
+            },
+            legend: {
+                show: false
             }
-        },
+        };
 
-        dataLabels: {
-            enabled: false
-        },
+        var warehouseCapacityChart = new ApexCharts(
+            document.querySelector("#warehouse-capacity-chart"),
+            warehouseCapacityOptions
+        );
 
-        legend: {
-            position: "top",
-        },
-
-        tooltip: {
-            shared: true,
-            intersect: false,
-        }
-    };
-
-    var flowChart = new ApexCharts(
-        document.querySelector("#stock-flow-chart"),
-        stockFlowOptions
-    );
-
-    flowChart.render();
-    
+        warehouseCapacityChart.render();
     </script>
 @endsection
