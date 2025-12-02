@@ -2,43 +2,62 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Setting;
+
 
 class SettingsController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(['auth', 'role:admin']);
+    }
+
     public function index()
     {
-        // Get Timezones list for the dropdown
-        $timezones = \DateTimeZone::listIdentifiers();
-        return view('settings.index', compact('timezones'));
+        return view('settings.index', [
+            'system_name'  => setting('system_name'),
+            'system_logo'  => setting('system_logo'),
+            'currency'     => setting('currency'),
+            'currency_dir' => setting('currency_dir'),
+            'gui_dir'      => setting('gui_dir'),
+            'theme'        => setting('theme'),
+        ]);
     }
 
     public function update(Request $request)
     {
-        $input = $request->except(['_token', 'logo']);
+        $request->validate([
+            'system_name'  => 'required|string|max:255',
+            'currency'     => 'required|string|max:10',
+            'currency_dir' => 'required|in:ltr,rtl',
+            'gui_dir'      => 'required|in:ltr,rtl',
+            'theme'        => 'required|in:light,dark',
+            'system_logo'  => 'nullable|image|mimes:jpg,jpeg,png,svg|max:2048',
+        ]);
 
-        // 1. Loop through text inputs and update DB
-        foreach ($input as $key => $value) {
-            Setting::updateOrCreate(['key' => $key], ['value' => $value]);
-        }
+        Setting::setValue('system_name', $request->system_name);
+        Setting::setValue('currency', $request->currency);
+        Setting::setValue('currency_dir', $request->currency_dir);
+        Setting::setValue('gui_dir', $request->gui_dir);
+        Setting::setValue('theme', $request->theme);
 
-        // 2. Handle Logo Upload separately
-        if ($request->hasFile('logo')) {
-            $request->validate(['logo' => 'image|mimes:jpeg,png,jpg,gif|max:2048']);
+        // Upload logo
+        if ($request->hasFile('system_logo')) {
 
-            // Delete old logo if exists
-            $oldLogo = Setting::getValue('logo');
-            if ($oldLogo && Storage::disk('public')->exists($oldLogo)) {
-                Storage::disk('public')->delete($oldLogo);
+            // Delete old if exists
+            $old = setting('system_logo');
+            if ($old && str_contains($old, 'storage/settings/')) {
+                Storage::disk('public')->delete(str_replace('/storage/', '', $old));
             }
 
-            // Store new logo
-            $path = $request->file('logo')->store('uploads/settings', 'public');
-            Setting::updateOrCreate(['key' => 'logo'], ['value' => $path]);
+            $path = $request->file('system_logo')->store('settings', 'public');
+            Setting::setValue('system_logo', '/storage/' . $path);
         }
 
-        return redirect()->back()->with('success', 'System settings updated successfully.');
+        cache()->flush();
+
+        return back()->with('success', 'Settings updated successfully!');
     }
 }

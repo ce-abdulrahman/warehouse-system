@@ -3,27 +3,26 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Cache;
 
 class Setting extends Model
 {
-    protected $fillable = ['key', 'value'];
+    protected $fillable = ['key', 'value', 'type'];
 
-    // Helper to get a setting value by key
-    public static function getValue($key, $default = null)
+    public $timestamps = true;
+
+    // Get setting (cached)
+    public static function get($key, $default = null)
     {
-        // Cache settings to prevent DB queries on every page load
-        return Cache::rememberForever("setting_{$key}", function () use ($key, $default) {
-            $setting = self::where('key', $key)->first();
-            return $setting ? $setting->value : $default;
-        });
+        return cache()->rememberForever("setting_{$key}", function () use ($key) {
+            return optional(self::where('key', $key)->first())->value;
+        }) ?? $default;
     }
 
-    // Clear cache on update
-    protected static function booted()
+    // Set setting
+    public static function setValue($key, $value)
     {
-        static::saved(function ($setting) {
-            Cache::forget("setting_{$setting->key}");
-        });
+        $setting = self::updateOrCreate(['key'=>$key], ['value'=>$value]);
+        cache()->forget("setting_{$key}");
+        return $setting;
     }
 }

@@ -1,73 +1,163 @@
 @extends('layouts.app')
+@section('title', 'System Settings')
 
 @section('content')
-    <!-- Start Content-->
-    <div class="container-xxl">
 
-        <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
-            <div class="flex-grow-1">
-                <h4 class="fs-18 fw-semibold m-0">Global System Settings</h4>
-            </div>
+    @php
+        use App\Models\Setting;
+    @endphp
 
-            <div class="text-end">
-                <ol class="breadcrumb m-0 py-0">
-                    <li class="breadcrumb-item"><a href="javascript: void(0);">Settings</a></li>
-                </ol>
-            </div>
+    @if (session('success'))
+        <div class="alert alert-success alert-dismissible fade show">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
+    @endif
 
-    </div> <!-- container-fluid -->
+    <div class="content">
 
-    <div class="card">
-        <div class="card-body">
-            <form action="{{ route('settings.update') }}" method="POST" enctype="multipart/form-data">
-                @csrf
+        <div class="container-xxl">
 
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label>System Name</label>
-                        <input type="text" name="system_name" class="form-control"
-                            value="{{ $settings['system_name'] ?? 'WMS' }}">
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-                        <label>Currency</label>
-                        <input type="text" name="currency" class="form-control"
-                            value="{{ $settings['currency'] ?? '$' }}">
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-                        <label>Layout Direction</label>
-                        <select name="direction" class="form-control">
-                            <option value="ltr" {{ ($settings['direction'] ?? '') == 'ltr' ? 'selected' : '' }}>Left to
-                                Right (LTR)</option>
-                            <option value="rtl" {{ ($settings['direction'] ?? '') == 'rtl' ? 'selected' : '' }}>Right to
-                                Left (RTL)</option>
-                        </select>
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-                        <label>Timezone</label>
-                        <select name="timezone" class="form-control">
-                            @foreach (timezone_identifiers_list() as $tz)
-                                <option value="{{ $tz }}"
-                                    {{ ($settings['timezone'] ?? 'UTC') == $tz ? 'selected' : '' }}>{{ $tz }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div class="col-md-12 mb-3">
-                        <label>Logo</label>
-                        <input type="file" name="logo" class="form-control mb-2">
-                        @if (!empty($settings['logo']))
-                            <img src="{{ asset('storage/' . $settings['logo']) }}" width="100">
-                        @endif
-                    </div>
+            <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
+                <div class="flex-grow-1">
+                    <h4 class="fs-18 fw-semibold m-0">Settings</h4>
                 </div>
 
-                <button type="submit" class="btn btn-primary">Save Changes</button>
+                <div class="text-end">
+                    <ol class="breadcrumb m-0 py-0">
+                        <li class="breadcrumb-item"><a href="javascript: void(0);">Dashboard</a></li>
+                        <li class="breadcrumb-item active">System Settings</li>
+                    </ol>
+                </div>
+            </div>
+
+            <form method="POST" action="{{ route('settings.update') }}" enctype="multipart/form-data">
+                @csrf
+
+                <div class="row g-4">
+
+                    {{-- ===============================
+             LEFT SIDE — GENERAL SETTINGS
+        ================================ --}}
+                    <div class="col-md-7">
+
+                        <div class="card shadow-sm border-0">
+                            <div class="card-header bg-white fw-bold">
+                                <i data-feather="sliders"></i> General Settings
+                            </div>
+
+                            <div class="card-body">
+
+                                {{-- System Name --}}
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">System Name</label>
+                                    <input type="text" name="system_name" class="form-control"
+                                        value="{{ Setting::get('system_name', 'Warehouse System') }}" required>
+                                </div>
+
+                                {{-- Currency --}}
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">Currency Symbol</label>
+                                    <input type="text" name="currency" class="form-control"
+                                        value="{{ Setting::get('currency', '$') }}" required>
+                                </div>
+
+                                {{-- Currency Direction --}}
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">Currency Format</label>
+                                    <select name="currency_dir" class="form-select">
+                                        <option value="ltr"
+                                            {{ Setting::get('currency_dir') == 'ltr' ? 'selected' : '' }}>
+                                            LTR ($ 100)
+                                        </option>
+                                        <option value="rtl"
+                                            {{ Setting::get('currency_dir') == 'rtl' ? 'selected' : '' }}>
+                                            RTL (100 IQD)
+                                        </option>
+                                    </select>
+                                </div>
+
+                                {{-- GUI Direction --}}
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">Interface Direction (GUI)</label>
+                                    <select name="gui_dir" class="form-select">
+                                        <option value="ltr" {{ Setting::get('gui_dir') == 'ltr' ? 'selected' : '' }}>
+                                            LTR (Left → Right)
+                                        </option>
+                                        <option value="rtl" {{ Setting::get('gui_dir') == 'rtl' ? 'selected' : '' }}>
+                                            RTL (Right → Left)
+                                        </option>
+                                    </select>
+                                </div>
+
+
+                                {{-- Theme --}}
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">Theme Mode</label>
+                                    <select name="theme" class="form-select">
+                                        <option value="light">Light Mode</option>
+                                        <option value="dark">Dark Mode</option>
+                                    </select>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+
+
+                    {{-- ===============================
+             RIGHT SIDE — SYSTEM LOGO
+        ================================ --}}
+                    <div class="col-md-5">
+
+                        <div class="card shadow-sm border-0">
+                            <div class="card-header bg-white fw-bold">
+                                <i data-feather="image"></i> System Logo
+                            </div>
+
+                            <div class="card-body text-center">
+
+                                {{-- Logo Preview --}}
+                                <img id="logoPreview" class="rounded mb-3"
+                                    src="{{ Setting::get('system_logo', '/assets/images/logo-dark.png') }}" width="160">
+
+                                {{-- Upload Input --}}
+                                <input type="file" class="form-control image-preview-input"
+                                    data-preview-target="#logoPreview" name="system_logo">
+
+                                <p class="text-muted small mt-3">
+                                    Recommended size: <strong>300×300</strong><br>
+                                    Formats: PNG, JPG, SVG — Max 2MB
+                                </p>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="text-end mt-4">
+                    <button class="btn btn-primary px-4">
+                        <i data-feather="save"></i> Save Settings
+                    </button>
+                </div>
+
             </form>
-        </div>
-    </div>
+        </div> <!-- container-fluid -->
+    </div> <!-- content -->
+
+@endsection
+
+
+
+
+{{-- ======================================================
+       CUSTOM SCRIPTS (Logo Preview & Feather Refresh)
+======================================================= --}}
+@section('scripts')
+    <script>
+        feather.replace();
+    </script>
 @endsection

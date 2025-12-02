@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="{{ $settings['language'] ?? 'en' }}" dir="{{ $settings['direction'] ?? 'ltr' }}">
+<html lang="en" dir="{{ setting('gui_dir', 'ltr') }}">
+
 
 <head>
     <meta charset="utf-8">
@@ -13,7 +14,7 @@
 
     <!-- App css -->
     @php
-        if (($settings['direction'] ?? 'ltr') == 'rtl') {
+        if ((setting('gui_dir') ?? 'ltr') == 'rtl') {
             echo '<link href="assets/css/app-rtl.min.css" rel="stylesheet" type="text/css" id="app-style" />';
         } else {
             echo '<link href="assets/css/app.min.css" rel="stylesheet" type="text/css" id="app-style" />';

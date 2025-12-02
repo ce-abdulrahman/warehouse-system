@@ -9,16 +9,11 @@ class SettingSeeder extends Seeder
 {
     public function run(): void
     {
-        $settings = [
-            ['key' => 'system_name', 'value' => 'Laravel WMS'],
-            ['key' => 'currency', 'value' => '$'],
-            ['key' => 'timezone', 'value' => 'UTC'], // Default Timezone
-            ['key' => 'direction', 'value' => 'ltr'], // ltr or rtl
-            ['key' => 'logo', 'value' => ''],          // Path to image
-        ];
-
-        foreach ($settings as $setting) {
-            Setting::updateOrCreate(['key' => $setting['key']], $setting);
-        }
+        Setting::setValue('system_name', 'Warehouse Monitoring System');
+        Setting::setValue('system_logo', '/assets/images/logo-dark.png');
+        Setting::setValue('currency', '$');
+        Setting::setValue('currency_dir', 'ltr');
+        Setting::setValue('gui_dir', 'ltr');
+        Setting::setValue('theme', 'light');
     }
 }

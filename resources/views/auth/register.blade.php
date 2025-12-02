@@ -4,7 +4,7 @@
 <head>
 
     <meta charset="utf-8" />
-    <title>Register | Tapeli - Responsive Admin Dashboard Template</title>
+    <title>Register</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="A fully featured admin theme which can be used to build CRM, CMS, etc." />
     <meta name="author" content="Zoyothemes" />
@@ -31,12 +31,8 @@
                     <div class="row">
                         <div class="col-md-7 mx-auto">
                             <div class="mb-0 border-0 p-md-5 p-lg-0 p-4">
-                                <div class="mb-4 p-0">
-                                    <a href="{{ route('register') }}" class="auth-logo">
-                                        <img src="{{ $settings['logo'] }}" alt="logo-dark" class="mx-auto" height="28" />
-                                        <span class="text-center">{{ $settings['system_name'] }}</span> 
-                                    </a>
-                                </div>
+
+
 
                                 <div class="pt-0">
                                     <form method="POST" action="{{ route('register') }}" class="my-4">
@@ -93,11 +89,10 @@
                 <div class="col-xl-7">
                     <div class="account-page-bg p-md-5 p-4">
                         <div class="text-center">
-                            <h3 class="text-dark mb-3 pera-title">Quick, Effective, and Productive With Tapeli Admin
-                                Dashboard</h3>
-                            <div class="auth-image">
-                                <img src="assets/images/authentication.svg" class="mx-auto img-fluid" alt="images">
-                            </div>
+                            <h3 class="text-dark mb-3 pera-title" style="font-size: 64px !important; font-weight: bold;">{{ setting('system_name') }}</h3>
+                                <div class="auth-image">
+                                    <img src="{{ setting('system_logo') }}" class="mx-auto img-fluid"  alt="images">
+                                </div>
                         </div>
                     </div>
                 </div>

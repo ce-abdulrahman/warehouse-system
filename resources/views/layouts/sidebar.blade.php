@@ -7,25 +7,25 @@
             <div class="logo-box">
                 <a href="{{ route('dashboard') }}" class="logo logo-light">
                     <span class="logo-sm">
-                        <img src="{{ $settings['logo'] }}" alt="" height="22">
-                        <span class="text-center">{{ $settings['system_name'] }}</span>
+                        <img src="{{ setting('system_logo') }}" alt="" height="22">
+                        <span class="text-center">{{ setting('system_logo') ?? 'AGHA' }}</span>
 
                     </span>
                     <span class="logo-lg">
-                        <img src="{{ $settings['logo'] }}" alt="" height="24">
-                        <span class="text-center">{{ $settings['system_name'] }}</span>
+                        <img src="{{ setting('system_logo') }}" alt="" height="24">
+                        <span class="text-center">{{ setting('system_name') ?? 'AGHA' }}</span>
 
                     </span>
                 </a>
                 <a href="{{ route('dashboard') }}" class="logo logo-dark">
                     <span class="logo-sm">
-                        <img src="{{ $settings['logo'] }}" alt="" height="22">
-                        <span class="text-center">{{ $settings['system_name'] }}</span>
+                        <img src="{{ setting('system_logo') }}" alt="" height="22">
+                        <span class="text-center">{{ setting('system_name') ?? 'AGHA' }}</span>
 
                     </span>
                     <span class="logo-lg">
-                        <img src="{{ $settings['logo'] }}" alt="" height="24">
-                        <span class="text-center">{{ $settings['system_name'] }}</span>
+                        <img src="{{ setting('system_logo') }}" alt="" height="24">
+                        <span class="text-center">{{ setting('system_name') ?? 'AGHA' }}</span>
 
                     </span>
                 </a>
