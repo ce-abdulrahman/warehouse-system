@@ -14,7 +14,7 @@ class UserController extends Controller
 
     public function index()
     {
-        $users = User::paginate(10);
+        $users = User::all();
         return view('users.index', compact('users'));
     }
 
@@ -33,15 +33,15 @@ class UserController extends Controller
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $avatarPath = $this->UploadImage($request, $request->file('avatar'), 'avatar');
+        $avatarPath = $this->UploadImage($request, 'avatar');
 
-        User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => $request->role,
-            'avatar' => $avatarPath,
-        ]);
+        $user = new User();
+        $user->name = $data['name'];
+        $user->email = $data['email'];
+        $user->password = Hash::make($data['password']);
+        $user->role = $data['role'];
+        $user->avatar = $avatarPath;
+        $user->save();
 
         return redirect()->route('users.index')->with('success', 'User created successfully.');
     }

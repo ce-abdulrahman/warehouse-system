@@ -22,7 +22,7 @@
     <div class="card col-md-6 mx-auto">
 
         <div class="card-body">
-            <form action="{{ route('users.store') }}" method="POST">
+            <form action="{{ route('users.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="profile-img-wrap edit-img">
                     <img class="inline-block" alt="user">

@@ -28,6 +28,7 @@
                                 <div class="col-md-5">
                                     <div class="profile-info-left">
                                         <h3 class="user-name m-t-0 mb-0">{{ auth()->user()->name }}</h3>
+                                        <br>
                                         <h6 class="text-muted">
                                             <div class="text ">
                                                 <span
@@ -36,7 +37,7 @@
                                                 </span>
                                             </div>
                                         </h6>
-
+                                        <br>
                                         <div class="small doj text-muted">{{ auth()->user()->email }}</div>
                                     </div>
                                 </div>
@@ -46,6 +47,7 @@
                                             <div class="title">Name:</div>
                                             <div class="text">{{ auth()->user()->name }}</div>
                                         </li>
+                                        <br>
                                         <li>
                                             <div class="title">Email:</div>
                                             <div class="text"><a
@@ -86,10 +88,10 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="{{ route('profile.update', $user->id) }}" method="POST">
+                    <form action="{{ route('profile.update', $user->id) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
-                        
+
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="profile-img-wrap edit-img">
@@ -110,7 +112,8 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Email</label>
-                                            <input type="text" class="form-control" value="{{ $user->email }}">
+                                            <input type="text" class="form-control" name="email"
+                                                value="{{ $user->email }}">
                                         </div>
                                     </div>
 

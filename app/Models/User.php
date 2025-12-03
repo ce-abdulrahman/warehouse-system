@@ -25,6 +25,13 @@ class User extends Authenticatable
         'avatar', // If you implemented profile image upload
     ];
 
+    protected $guarded = [
+        'id',
+        'created_at',
+        'updated_at',
+        'deleted_at',
+    ];
+
     /**
      * The attributes that should be hidden for serialization.
      */

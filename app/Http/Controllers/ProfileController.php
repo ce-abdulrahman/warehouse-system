@@ -27,24 +27,19 @@ class ProfileController extends Controller
     /**
      * Update the user's profile information.
      */
-    public function update(ProfileUpdateRequest $request)
+    public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $user = $request->user();
+        $user = Auth::user();
 
-        $user->fill($request->validated());
+        $imagePath = $this->UploadImage($request, 'avatar');
 
-        if ($user->isDirty('email')) {
-            $user->email_verified_at = null;
-        }
-
-        if ($request->hasFile('avatar')) {
-            $imgPath = $this->UploadImage($request, $request->file('avatar'), 'avatar');
-            $user->avatar = $imgPath;
-        }
-
+        $user->name = $request->input('name');
+        $user->email = $request->input('email');
+        $user->avatar = isset($imagePath) ? $imagePath : $user->avatar;
         $user->save();
 
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+
+        return redirect()->back()->with('success', 'Profile updated successfully!');
     }
 
     /**

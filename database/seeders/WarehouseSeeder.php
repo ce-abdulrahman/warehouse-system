@@ -7,10 +7,8 @@ use App\Models\Warehouse;
 
 class WarehouseSeeder extends Seeder
 {
-    public function run(): void
+    public function run()
     {
-        Warehouse::create(['name' => 'Main HQ Warehouse', 'location' => 'New York, USA']);
-        Warehouse::create(['name' => 'East Coast Depot', 'location' => 'Boston, USA']);
-        Warehouse::create(['name' => 'West Coast Hub', 'location' => 'San Diego, USA']);
+        Warehouse::factory()->count(5)->create();
     }
 }
