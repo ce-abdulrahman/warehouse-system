@@ -17,10 +17,9 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
 
             // Logic Fields
-            $table->enum('movement_type', ['in', 'out']); // IN = Purchase/Return, OUT = Sale/Loss
+            $table->string('movement_type')->check("movement_type in ('IN','OUT')"); // IN = Purchase/Return, OUT = Sale/Loss
             $table->integer('quantity');
-            $table->integer('before_stock');
-            $table->integer('after_stock');
+
             $table->text('notes')->nullable();
 
             $table->timestamps();

@@ -86,15 +86,17 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="{{ route('users.update', $user->id) }}" method="POST">
-                        @csrf @method('PUT')
+                    <form action="{{ route('profile.update', $user->id) }}" method="POST">
+                        @csrf
+                        @method('PUT')
+                        
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="profile-img-wrap edit-img">
                                     <img class="inline-block" src="{{ $user->avatar }}" alt="user">
                                     <div class="fileupload btn">
                                         <span class="btn-text">edit</span>
-                                        <input class="upload" type="file" name="image">
+                                        <input class="upload" type="file" name="avatar">
                                     </div>
                                 </div>
                                 <div class="row">

@@ -28,7 +28,7 @@
                     <img class="inline-block" alt="user">
                     <div class="fileupload btn">
                         <span class="btn-text">edit</span>
-                        <input class="upload" type="file" name="image">
+                        <input class="upload" type="file" name="avatar">
                     </div>
                 </div>
                 <div class="mb-3">

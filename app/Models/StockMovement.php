@@ -15,8 +15,7 @@ class StockMovement extends Model
         'user_id',
         'movement_type',          // 'in' or 'out'
         'quantity',
-        'before_stock',  // Stock snapshot before transaction
-        'after_stock',   // Stock snapshot after transaction
+        
         'notes',
     ];
 

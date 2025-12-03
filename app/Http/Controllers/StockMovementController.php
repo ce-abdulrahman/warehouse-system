@@ -6,84 +6,80 @@ use App\Models\StockMovement;
 use App\Models\Item;
 use App\Models\Warehouse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
 
 class StockMovementController extends Controller
 {
     public function index()
     {
-        // Load relationships for the history table
-        $movements = StockMovement::with(['item', 'warehouse', 'user'])
-                        ->latest()
-                        ->paginate(15);
-        return view('movements.index', compact('movements'));
+        $movements = StockMovement::with('item','warehouse')
+            ->orderBy('id', 'desc')
+            ->paginate(20);
+
+        return view('stock_movements.index', compact('movements'));
     }
 
     public function create()
     {
         $items = Item::all();
-        $warehouses = Warehouse::where('is_active', true)->get();
-        return view('movements.create', compact('items', 'warehouses'));
+        $warehouses = Warehouse::all();
+
+        return view('stock_movements.create', compact('items','warehouses'));
     }
 
     public function store(Request $request)
     {
-        $request->validate([
-            'item_id'      => 'required|exists:items,id',
-            'warehouse_id' => 'required|exists:warehouses,id',
-            'type'         => 'required|in:in,out',
-            'quantity'     => 'required|integer|min:1',
-            'notes'        => 'nullable|string',
+        $data = $request->validate([
+            'item_id' => 'required',
+            'warehouse_id' => 'required',
+            'user_id' => 'required',
+            'movement_type' => 'required|in:IN,OUT',
+            'quantity' => 'required|numeric|min:1',
+            'note' => 'nullable|string'
         ]);
 
-        try {
-            // Start Transaction to ensure data integrity
-            DB::transaction(function () use ($request) {
 
-                // 1. Lock the item row to prevent concurrent updates
-                $item = Item::lockForUpdate()->find($request->item_id);
+        $sm = new StockMovement();
+        $sm->item_id = $data['item_id'];
+        $sm->warehouse_id = $data['warehouse_id'];
+        $sm->user_id = $data['user_id'];
+        $sm->movement_type = $data['movement_type'];
+        $sm->quantity = $data['quantity'];
+        $sm->notes = $data['note'] ?? null;
+        $sm->save();
 
-                $before_stock = $item->stock;
-                $quantity = $request->quantity;
-
-                // 2. Check if we have enough stock for 'OUT' movements
-                if ($request->type === 'out' && $before_stock < $quantity) {
-                    throw new \Exception("Insufficient stock. Current stock is {$before_stock}.");
-                }
-
-                // 3. Calculate new stock
-                $after_stock = ($request->type === 'in')
-                                ? $before_stock + $quantity
-                                : $before_stock - $quantity;
-
-                // 4. Update the Item table
-                $item->update(['stock' => $after_stock]);
-
-                // 5. Create the Movement History Record
-                StockMovement::create([
-                    'item_id'      => $request->item_id,
-                    'warehouse_id' => $request->warehouse_id,
-                    'user_id'      => Auth::id(),
-                    'type'         => $request->type,
-                    'quantity'     => $quantity,
-                    'before_stock' => $before_stock,
-                    'after_stock'  => $after_stock,
-                    'notes'        => $request->notes,
-                ]);
-            });
-
-            return redirect()->route('movements.index')
-                             ->with('success', 'Stock movement recorded successfully.');
-
-        } catch (\Exception $e) {
-            // Return with error if transaction fails or stock is low
-            return back()->withInput()->withErrors(['error' => $e->getMessage()]);
-        }
+        return redirect()->route('stock_movements.index')
+            ->with('success', 'Movement recorded successfully.');
     }
 
-    public function show(StockMovement $movement)
+    public function edit(StockMovement $stock_movement)
     {
-        return view('movements.show', compact('movement'));
+        $items = Item::all();
+        $warehouses = Warehouse::all();
+
+        return view('stock_movements.edit', compact('stock_movement','items','warehouses'));
+    }
+
+    public function update(Request $request, StockMovement $stock_movement)
+    {
+        $request->validate([
+            'item_id' => 'required',
+            'warehouse_id' => 'required',
+            'movement_type' => 'required|in:IN,OUT',
+            'quantity' => 'required|numeric|min:1',
+            'note' => 'nullable|string'
+        ]);
+
+        $stock_movement->update($request->all());
+
+        return redirect()->route('stock_movements.index')
+            ->with('success', 'Movement updated.');
+    }
+
+    public function destroy(StockMovement $stock_movement)
+    {
+        $stock_movement->delete();
+
+        return redirect()->route('stock_movements.index')
+            ->with('success', 'Movement deleted.');
     }
 }

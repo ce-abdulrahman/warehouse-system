@@ -17,14 +17,7 @@ class RoleMiddleware
      */
     public function handle(Request $request, Closure $next, ...$roles): Response
     {
-        if (!Auth::check()) {
-            return redirect('login');
-        }
-
-        $user = Auth::user();
-
-        // If the user's role is NOT in the list of allowed roles passed to the middleware
-        if (!in_array($user->role, $roles)) {
+        if (!Auth::check() || !in_array(Auth::user()->role, $roles)) {
             abort(403, 'Unauthorized action.');
         }
 

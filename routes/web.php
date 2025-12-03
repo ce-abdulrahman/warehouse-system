@@ -27,14 +27,15 @@ Route::get('/', function () {
 });
 
 // Dashboard Route
-Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
 
 // Authenticated Routes Group
 Route::middleware('auth')->group(function () {
-
     // --- Profile Management ---
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // --- Main Modules (Accessible by Officers & Admins) ---
@@ -46,24 +47,17 @@ Route::middleware('auth')->group(function () {
     Route::resource('suppliers', SupplierController::class);
 
     // --- Stock Movements ---
-    // We only need specific routes for movements
-    Route::get('/movements', [StockMovementController::class, 'index'])->name('movements.index');
-    Route::get('/movements/create', [StockMovementController::class, 'create'])->name('movements.create');
-    Route::post('/movements', [StockMovementController::class, 'store'])->name('movements.store');
-    Route::get('/movements/{movement}', [StockMovementController::class, 'show'])->name('movements.show');
+    Route::resource('stock_movements', StockMovementController::class);
 
     // --- ADMIN ONLY ROUTES ---
     // Uses the 'role' middleware we created earlier
-    Route::middleware(['role:admin'])->group(function () {
 
-        // User Management
-        Route::resource('users', UserController::class);
+    // User Management
+    Route::resource('users', UserController::class)->only(['index', 'create','store']);
 
-        // System Settings
-        Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
-        Route::post('/settings', [SettingsController::class, 'update'])->name('settings.update');
-    });
-
+    // System Settings
+    Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
+    Route::post('/settings', [SettingsController::class, 'update'])->name('settings.update');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

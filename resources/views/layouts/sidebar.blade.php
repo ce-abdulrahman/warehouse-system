@@ -28,8 +28,8 @@
                         <span>Items</span></a>
                 </li>
                 <li>
-                    <a href="{{ route('movements.index') }}"><i
-                            class="la la-file-text {{ $currentRoute == 'movements.index' ? 'active' : '' }}"></i>
+                    <a href="{{ route('stock_movements.index') }}"><i
+                            class="la la-file-text {{ $currentRoute == 'stock_movements.index' ? 'active' : '' }}"></i>
                         <span>Movements</span></a>
                 </li>
                 <li>
@@ -45,17 +45,19 @@
 
                 </li>
 
-                <li class="menu-title">
-                    <span>General</span>
-                </li>
-                <li class="submenu">
-                <li>
-                    <a href="{{ route('users.index') }}"><i class="la la-users"></i> <span>Users</span></a>
-                </li>
-                <li>
-                    <a href="{{ route('settings.index') }}"><i class="la la-cog"></i> <span>Settings</span></a>
-                </li>
-                </li>
+                @if (auth()->user()->role === 'admin')
+                    <li class="menu-title">
+                        <span>General</span>
+                    </li>
+                    <li class="submenu">
+                    <li>
+                        <a href="{{ route('users.index') }}"><i class="la la-users"></i> <span>Users</span></a>
+                    </li>
+                    <li>
+                        <a href="{{ route('settings.index') }}"><i class="la la-cog"></i> <span>Settings</span></a>
+                    </li>
+                    </li>
+                @endif
 
 
 
