@@ -6,9 +6,12 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
+use App\Traits\FileUploadTrait;
 
 class UserController extends Controller
 {
+    use FileUploadTrait;
+
     public function index()
     {
         $users = User::paginate(10);
@@ -22,18 +25,22 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $data = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'role' => 'required|string|in:admin,officer,viewer', // Ensure you have a 'role' column in migration
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
+
+        $avatarPath = $this->UploadImage($request, $data['image']);
 
         User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => $request->role,
+            'avatar' => $avatarPath,
         ]);
 
         return redirect()->route('users.index')->with('success', 'User created successfully.');
@@ -60,10 +67,9 @@ class UserController extends Controller
             'avatar' => $request->avatar,
         ];
 
-        if ($request->hasFile('avatar')) {
-            $imageName = time() . '.' . $request->image->extension();
-            $request->image->move(public_path('avatars'), $imageName);
-            $data['avatar'] = 'avatars/' . $imageName;
+        $avatarPath = $this->UploadImage($request, $data['avatar'] ?? '', $user->avatar);
+        if ($avatarPath) {
+            $data['avatar'] = $avatarPath;
         }
 
         // Only hash and update password if provided

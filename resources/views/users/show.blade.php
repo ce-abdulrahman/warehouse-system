@@ -1,179 +1,129 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container-xxl">
-        <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
-            <div class="flex-grow-1">
-                <h4 class="fs-18 fw-semibold m-0">Profile</h4>
-            </div>
-
-            <div class="text-end">
-                <ol class="breadcrumb m-0 py-0">
-                    <li class="breadcrumb-item"><a href="javascript: void(0);">Profile</a></li>
-                </ol>
+    <div class="page-header">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3 class="page-title">Profile</h3>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
+                    <li class="breadcrumb-item active">Profile</li>
+                </ul>
             </div>
         </div>
+        </div>
 
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-
-                    <div class="card-body">
-
-                        <div class="align-items-center">
-                            <div class="d-flex align-items-center">
-                                <img src="{{ auth()->user()->avatar }}"
-                                    class="rounded-circle avatar-xxl img-thumbnail float-start" alt="image profile">
-
-                                <div class="overflow-hidden ms-4">
-                                    <h4 class="m-0 text-dark fs-20">{{ auth()->user()->name }}</h4>
-                                    <p class="my-1 text-muted fs-16">{{ auth()->user()->email }}</p>
-                                    <span class="fs-15">
-                                        <span class="fs-15"><i class="mdi mdi- me-2 align-middle"></i>Role: <span
-                                                class="badge bg-primary-subtle text-primary px-2 py-1 fs-13 fw-normal">{{ auth()->user()->role }}</span>
-                                        </span>
+        <div class="card mb-0">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="profile-view">
+                            <div class="profile-img-wrap">
+                                <div class="profile-img">
+                                    <a href="#"><img alt="" src="{{ auth()->user()->avatar }}"></a>
                                 </div>
                             </div>
-                        </div>
-
-                        <ul class="nav nav-underline border-bottom pt-2" id="pills-tab" role="tablist">
-                            <li class="nav-item">
-                                <a class="nav-link p-2" id="setting_tab" data-bs-toggle="tab" href="#profile_setting"
-                                    role="tab">
-                                    <span class="d-block d-sm-none"><i class="mdi mdi-school"></i></span>
-                                    <span class="d-none d-sm-block">Setting</span>
-                                </a>
-                            </li>
-                        </ul>
-
-                        <div class="tab-content text-muted bg-white">
-
-                            <div class="tab-pane pt-4" id="profile_setting" role="tabpanel">
+                            <div class="profile-basic">
                                 <div class="row">
+                                    <div class="col-md-5">
+                                        <div class="profile-info-left">
+                                            <h3 class="user-name m-t-0 mb-0">{{ auth()->user()->name }}</h3>
+                                            <h6 class="text-muted">{{ auth()->user()->role }}</h6>
 
-                                    <form action="{{ route('users.update', $user->id) }}" method="POST">
-                                        @csrf @method('PUT')
-
-                                        <div class="row">
-                                            <div class="col-lg-6 col-xl-6">
-                                                <div class="card border mb-0">
-
-                                                    <div class="card-header">
-                                                        <div class="row align-items-center">
-                                                            <div class="col">
-                                                                <h4 class="card-title mb-0">Personal Information</h4>
-                                                            </div><!--end col-->
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="card-body">
-                                                        <div class="form-group mb-3 row">
-                                                            <label class="form-label">First Name</label>
-                                                            <div class="col-lg-12 col-xl-12">
-                                                                <input class="form-control" name="name" type="text"
-                                                                    value="{{ $user->name }}">
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="form-group mb-3 row">
-                                                            <label class="form-label">Email Address</label>
-                                                            <div class="col-lg-12 col-xl-12">
-                                                                <div class="input-group">
-                                                                    <span class="input-group-text"><i
-                                                                            class="mdi mdi-email"></i></span>
-                                                                    <input type="text" class="form-control"
-                                                                        value="{{ $user->email }}" name="email" placeholder="Email"
-                                                                        aria-describedby="basic-addon1" readonly>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="form-group mb-3 row">
-                                                            <label class="form-label">Role</label>
-                                                            <div class="col-lg-12 col-xl-12">
-                                                                <select name="role" id="role" class="form-select">
-                                                                    <option value="admin"
-                                                                        {{ $user->role == 'admin' ? 'selected' : '' }}>
-                                                                        Admin</option>
-                                                                    <option value="user"
-                                                                        {{ $user->role == 'user' ? 'selected' : '' }}>
-                                                                        User</option>
-                                                                    <option value="viewer"
-                                                                        {{ $user->role == 'viewer' ? 'selected' : '' }}>
-                                                                        Viewer</option>
-                                                                </select>
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="form-group mb-3 row">
-                                                            <label class="form-label">Image</label>
-                                                            <div class="col-lg-12 col-xl-12">
-                                                                <input class="form-control" type="file"
-                                                                    value="{{ $user->avatar }}" name="avatar">
-                                                            </div>
-                                                        </div>
-
-                                                    </div><!--end card-body-->
-                                                </div>
-                                            </div>
-
-                                            <div class="col-lg-6 col-xl-6">
-                                                <div class="card border mb-0">
-
-                                                    <div class="card-header">
-                                                        <div class="row align-items-center">
-                                                            <div class="col">
-                                                                <h4 class="card-title mb-0">Change Password</h4>
-                                                            </div><!--end col-->
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="card-body mb-0">
-                                                        <div class="form-group mb-3 row">
-                                                            <label class="form-label">Old Password</label>
-                                                            <div class="col-lg-12 col-xl-12">
-                                                                <input class="form-control" type="password"
-                                                                    placeholder="Old Password">
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group mb-3 row">
-                                                            <label class="form-label">New Password</label>
-                                                            <div class="col-lg-12 col-xl-12">
-                                                                <input class="form-control" name="password"
-                                                                    type="password" placeholder="New Password">
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group mb-3 row">
-                                                            <label class="form-label">Confirm Password</label>
-                                                            <div class="col-lg-12 col-xl-12">
-                                                                <input class="form-control" name="password_confirmation"
-                                                                    type="password" placeholder="Confirm Password">
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="form-group row">
-                                                            <div class="col-lg-12 col-xl-12">
-                                                                <button type="submit" class="btn btn-primary">Change
-                                                                    Password</button>
-                                                                <button type="button"
-                                                                    class="btn btn-danger">Cancel</button>
-                                                            </div>
-                                                        </div>
-
-                                                    </div><!--end card-body-->
-                                                </div>
-                                            </div>
-
+                                            <div class="small doj text-muted">{{ auth()->user()->email }}</div>
                                         </div>
-                                    </form>
-                                </div>
-                            </div> <!-- end education -->
+                                    </div>
+                                    <div class="col-md-7">
+                                        <ul class="personal-info">
+                                            <li>
+                                                <div class="title">Name:</div>
+                                                <div class="text">{{ auth()->user()->name }}</div>
+                                            </li>
+                                            <li>
+                                                <div class="title">Email:</div>
+                                                <div class="text"><a href="mailto:{{ auth()->user()->email }}">{{ auth()->user()->email }}</a></div>
+                                            </li>
+                                            <li>
+                                                <div class="title">Role:</div>
+                                                <div class="text ">{{ auth()->user()->role }}</div>
+                                            </li>
 
-                        </div> <!-- Tab panes -->
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="pro-edit"><a data-target="#profile_info" data-toggle="modal" class="edit-icon"
+                                    href="#"><i class="fa fa-pencil"></i></a></div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
+        <!-- Profile Modal -->
+        <div id="profile_info" class="modal custom-modal fade" role="dialog">
+            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Profile Information</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="{{ route('users.update', $user->id) }}" method="POST">
+                            @csrf @method('PUT')
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="profile-img-wrap edit-img">
+                                        <img class="inline-block" src="{{ $user->avatar }}" alt="user">
+                                        <div class="fileupload btn">
+                                            <span class="btn-text">edit</span>
+                                            <input class="upload" type="file" name="image">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Name</label>
+                                                <input type="text" class="form-control" name="name"
+                                                    value="{{ $user->name }}">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Email</label>
+                                                <input type="text" class="form-control" value="{{ $user->email }}">
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Role <span class="text-danger">*</span></label>
+                                        <select name="role" id="role" class="select">
+                                            <option value="admin" {{ $user->role == 'admin' ? 'selected' : '' }}>
+                                                Admin</option>
+                                            <option value="user" {{ $user->role == 'user' ? 'selected' : '' }}>
+                                                User</option>
+                                            <option value="viewer" {{ $user->role == 'viewer' ? 'selected' : '' }}>
+                                                Viewer</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="submit-section">
+                                <button class="btn btn-primary submit-btn">Save</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /Profile Modal -->
     </div>
 @endsection

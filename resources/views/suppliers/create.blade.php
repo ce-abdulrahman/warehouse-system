@@ -1,6 +1,22 @@
 @extends('layouts.app')
 
 @section('content')
+<div class="page-header">
+        <div class="row">
+            <div class="col">
+                <h3 class="page-title">Suppliers Management</h3>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
+                    <li class="breadcrumb-item active"><a href="{{ route('suppliers.index') }}">Suppliers Management</a></li>
+                    <li class="breadcrumb-item active">Add Supplier</li>
+                </ul>
+            </div>
+            <div class="col-auto">
+                <a href="{{ route('suppliers.index') }}" class="btn btn-outline-dark rounded-pill">Back</a>
+            </div>
+        </div>
+    </div>
+
 <div class="card col-md-6 mx-auto">
     <div class="card-header">Add Supplier</div>
     <div class="card-body">

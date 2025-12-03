@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Item;
+use App\Models\StockMovement;
 use App\Models\Supplier;
 use App\Models\Warehouse;
 use Illuminate\Http\Request;
@@ -21,20 +22,27 @@ class ItemController extends Controller
     public function create()
     {
         $suppliers = Supplier::all();
-        return view('items.create', compact('suppliers'));
+        $movements = StockMovement::all();
+        $warehouses = Warehouse::all();
+        return view('items.create', compact('suppliers', 'movements', 'warehouses'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
             'name'        => 'required|string|max:255',
-            'sku'         => 'required|string|max:100|unique:items,sku',
+
             'supplier_id' => 'nullable|exists:suppliers,id',
+            'warehouse_id' => 'nullable|exists:warehouses,id',
+
+            'stock'       => 'nullable|integer|min:0',
             'description' => 'nullable|string',
             'unit'        => 'required|string|max:50',
+            'price'       => 'nullable|numeric|min:0',
+            'min_stock'   => 'nullable|integer|min:0',
         ]);
 
-        // Note: 'stock' defaults to 0 in DB and is only changed via Movements
+
         Item::create($request->all());
 
         return redirect()->route('items.index')->with('success', 'Item created successfully.');
@@ -43,16 +51,23 @@ class ItemController extends Controller
     public function edit(Item $item)
     {
         $suppliers = Supplier::all();
-        return view('items.edit', compact('item', 'suppliers'));
+        $warehouses = Warehouse::all();
+        return view('items.edit', compact('item', 'suppliers', 'warehouses'));
     }
 
     public function update(Request $request, Item $item)
     {
         $request->validate([
             'name'        => 'required|string|max:255',
-            'sku'         => 'required|string|max:100|unique:items,sku,' . $item->id,
+
             'supplier_id' => 'nullable|exists:suppliers,id',
+            'warehouse_id' => 'nullable|exists:warehouses,id',
+
+            'stock'       => 'nullable|integer|min:0',
+            'description' => 'nullable|string',
             'unit'        => 'required|string|max:50',
+            'price'       => 'nullable|numeric|min:0',
+            'min_stock'   => 'nullable|integer|min:0',
         ]);
 
         $item->update($request->all());
@@ -60,12 +75,11 @@ class ItemController extends Controller
         return redirect()->route('items.index')->with('success', 'Item updated successfully.');
     }
 
-    public function show(Item $item)
+    public function show(string $id)
     {
-        // Load related supplier and movements for detailed view
-        $item->load('supplier', 'movements');
-        $movements = $item->movements()->with('warehouse')->latest()->get();
-        return view('items.show', compact('item', 'movements'));
+        $item = Item::with('supplier', 'warehouse')->findOrFail($id);
+
+        return view('items.show', compact('item'));
     }
 
     public function destroy(Item $item)

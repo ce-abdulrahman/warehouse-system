@@ -40,6 +40,8 @@ class SupplierController extends Controller
         return redirect()->route('suppliers.index')->with('success', 'Supplier updated.');
     }
 
+    
+
     public function destroy(Supplier $supplier)
     {
         $supplier->delete();

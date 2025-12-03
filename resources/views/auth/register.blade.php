@@ -2,116 +2,99 @@
 <html lang="en">
 
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+    <meta name="description" content="Smarthr - Bootstrap Admin Template">
+    <meta name="keywords"
+        content="admin, estimates, bootstrap, business, corporate, creative, management, minimal, modern, accounts, invoice, html5, responsive, CRM, Projects">
+    <meta name="author" content="Dreamguys - Bootstrap Admin Template">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Register - HRMS admin template</title>
 
-    <meta charset="utf-8" />
-    <title>Register</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="A fully featured admin theme which can be used to build CRM, CMS, etc." />
-    <meta name="author" content="Zoyothemes" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.png">
 
-    <!-- App favicon -->
-    <link rel="shortcut icon" href="assets/images/favicon.ico">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
 
-    <!-- App css -->
-    <link href="assets/css/app.min.css" rel="stylesheet" type="text/css" id="app-style" />
+    <!-- Fontawesome CSS -->
+    <link rel="stylesheet" href="assets/css/font-awesome.min.css">
 
-    <!-- Icons -->
-    <link href="assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="assets/css/style.css">
 
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+   <script src="assets/js/html5shiv.min.js"></script>
+   <script src="assets/js/respond.min.js"></script>
+  <![endif]-->
 </head>
 
-<body class="bg-white">
+<body class="account-page">
 
-    <!-- Begin page -->
-    <div class="account-page">
-        <div class="container-fluid p-0">
-            <div class="row align-items-center g-0">
-                <div class="col-xl-5">
-                    <div class="row">
-                        <div class="col-md-7 mx-auto">
-                            <div class="mb-0 border-0 p-md-5 p-lg-0 p-4">
+    <!-- Main Wrapper -->
+    <div class="main-wrapper">
+        <div class="account-content">
+
+            <div class="container">
+
+                <!-- Account Logo -->
+                <div class="account-logo">
+                    <a href="{{ url('/') }}"><img src="{{ setting('system_logo') ?? '' }}"
+                            alt="{{ setting('system_name') ?? '' }}"></a>
 
 
+                </div>
+                <!-- /Account Logo -->
 
-                                <div class="pt-0">
-                                    <form method="POST" action="{{ route('register') }}" class="my-4">
-                                        @csrf
-                                        <div class="form-group mb-3">
-                                            <label for="username" class="form-label">Name</label>
-                                            <input class="form-control" name="name" type="text" id="username"
-                                                required="" placeholder="Enter your Name">
-                                        </div>
+                <div class="account-box">
+                    <div class="account-wrapper">
+                        <h3 class="account-title">Register</h3>
+                        <p class="account-subtitle">Access to our dashboard</p>
 
-                                        <div class="form-group mb-3">
-                                            <label for="emailaddress" class="form-label">Email address</label>
-                                            <input class="form-control" type="email" id="emailaddress" name="email"
-                                                required="" placeholder="Enter your email">
-                                        </div>
+                        <!-- Account Form -->
+                        <form method="POST" action="{{ route('register') }}" class="my-4">
+                            @csrf
 
-                                        <div class="form-group mb-3">
-                                            <label for="password" class="form-label">Password</label>
-                                            <input class="form-control" type="password" required="" id="password"
-                                                name="password" placeholder="Enter your password">
-                                        </div>
-
-                                        <div class="form-group mb-3">
-                                            <label for="password" class="form-label">Confirm Password</label>
-                                            <input class="form-control" type="password" required="" id="password_confirmation"
-                                                name="password_confirmation" placeholder="Confirm your password">
-                                        </div>
-
-                                        <div class="form-group mb-0 row">
-                                            <div class="col-12">
-                                                <div class="d-grid">
-                                                    <button class="btn btn-primary" type="submit"> Register</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </form>
-
-                                    <div class="saprator my-4"><span>or sign in with</span></div>
-
-                                    <div class="text-center text-muted mb-4">
-                                        <p class="mb-0">Already have an account ?<a
-                                                class='text-primary ms-2 fw-medium' href='{{ route('login') }}'>Login
-                                                here</a></p>
-                                    </div>
-
-                                </form>
-                                </div>
-
+                            <div class="form-group">
+                                <label>Name</label>
+                                <input class="form-control" type="text" name="name" required>
                             </div>
-                        </div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input class="form-control" type="text" name="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Password</label>
+                                <input class="form-control" type="password" name="password" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Repeat Password</label>
+                                <input class="form-control" type="password" name="password_confirmation" required>
+                            </div>
+                            <div class="form-group text-center">
+                                <button class="btn btn-primary account-btn" type="submit">Register</button>
+                            </div>
+                            <div class="account-footer">
+                                <p>Already have an account? <a href="{{ route('login') }}">Login</a></p>
+                            </div>
+                        </form>
+                        <!-- /Account Form -->
                     </div>
                 </div>
-
-                <div class="col-xl-7">
-                    <div class="account-page-bg p-md-5 p-4">
-                        <div class="text-center">
-                            <h3 class="text-dark mb-3 pera-title" style="font-size: 64px !important; font-weight: bold;">{{ setting('system_name') }}</h3>
-                                <div class="auth-image">
-                                    <img src="{{ setting('system_logo') }}" class="mx-auto img-fluid"  alt="images">
-                                </div>
-                        </div>
-                    </div>
-                </div>
-
             </div>
         </div>
     </div>
-    <!-- END wrapper -->
+    <!-- /Main Wrapper -->
 
-    <!-- Vendor -->
-    <script src="assets/libs/jquery/jquery.min.js"></script>
-    <script src="assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="assets/libs/simplebar/simplebar.min.js"></script>
-    <script src="assets/libs/node-waves/waves.min.js"></script>
-    <script src="assets/libs/waypoints/lib/jquery.waypoints.min.js"></script>
-    <script src="assets/libs/jquery.counterup/jquery.counterup.min.js"></script>
-    <script src="assets/libs/feather-icons/feather.min.js"></script>
+    <!-- jQuery -->
+    <script src="assets/js/jquery-3.5.1.min.js"></script>
 
-    <!-- App js-->
+    <!-- Bootstrap Core JS -->
+    <script src="assets/js/popper.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+
+    <!-- Custom JS -->
     <script src="assets/js/app.js"></script>
 
 </body>

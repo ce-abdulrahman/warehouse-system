@@ -4,14 +4,19 @@
 
 @section('content')
 
-<div class="container-xxl">
-
-    {{-- Page Header --}}
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4 class="fw-bold">Items List</h4>
-        <a href="{{ route('items.create') }}" class="btn btn-primary">
-            <i data-feather="plus"></i> Add New Item
-        </a>
+<div class="page-header">
+        <div class="row">
+            <div class="col">
+                <h3 class="page-title">Items Management</h3>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
+                    <li class="breadcrumb-item active">Items Management</li>
+                </ul>
+            </div>
+            <div class="col-auto">
+                <a href="{{ route('items.create') }}" class="btn btn-outline-dark rounded-pill">Add Item</a>
+            </div>
+        </div>
     </div>
 
     {{-- Filters --}}
@@ -68,39 +73,43 @@
     <div class="card">
         <div class="card-body">
 
-            <table id="datatable-buttons" class="table table-striped table-bordered data-table" style="width:100%">
+            <table class="datatable table table-stripped mb-0" style="width:100%">
                 <thead class="table-light">
                     <tr>
-                        <th>Created</th>
+                        <th>#</th>
                         <th>Name</th>
-                        <th>SKU</th>
                         <th>Warehouse</th>
                         <th>Supplier</th>
+                        <th>Current Stock</th>
                         <th>Min Stock</th>
+                        <th>Price</th>
+                        <th>Created</th>
                         <th width="150">Actions</th>
                     </tr>
                 </thead>
 
                 <tbody>
-                    @foreach($items as $item)
+                    @foreach($items as $index => $item)
                     <tr>
-                        <td>{{ $item->created_at->format('Y-m-d') }}</td>
 
+                        <td>{{ ++$index }}</td>
                         <td>{{ $item->name }}</td>
-                        <td>{{ $item->sku }}</td>
 
                         <td>{{ $item->warehouse->name ?? '' }}</td>
                         <td>{{ $item->supplier->name ?? '' }}</td>
 
+                        <td>{{ $item->stock }}</td>
                         <td>{{ $item->min_stock }}</td>
+                        <td>{{ setting('currency') }} {{ $item->price }}</td>
+
+                        <td>{{ $item->created_at->format('Y-m-d') }}</td>
+
 
                         <td>
-                            <a href="{{ route('items.show', $item->id) }}" class="btn btn-sm btn-info">
-                                <i data-feather="eye"></i>
-                            </a>
+
 
                             <a href="{{ route('items.edit', $item->id) }}" class="btn btn-sm btn-warning">
-                                <i data-feather="edit"></i>
+                                <i data-feather="edit"></i> Edit
                             </a>
 
                             <form action="{{ route('items.destroy', $item->id) }}" method="POST"
@@ -109,7 +118,7 @@
                                 @csrf
                                 @method('DELETE')
                                 <button class="btn btn-sm btn-danger">
-                                    <i data-feather="trash"></i>
+                                    <i data-feather="trash"></i> Delete
                                 </button>
                             </form>
                         </td>

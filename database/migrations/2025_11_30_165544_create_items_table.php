@@ -12,12 +12,15 @@ return new class extends Migration
             $table->id();
             // Foreign Key to Supplier
             $table->foreignId('supplier_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('warehouse_id')->nullable()->constrained()->nullOnDelete();
 
             $table->string('name');
-            $table->string('sku')->unique();
             $table->text('description')->nullable();
-            $table->integer('stock')->default(0); // Current Stock
+            $table->integer('min_stock')->default(0); // Minimum Stock
+
             $table->string('unit')->default('pcs'); // e.g., kg, box, pcs
+            $table->integer('price')->default(0);
+            $table->integer('stock')->default(0); // Current Stock
 
             $table->timestamps();
             $table->softDeletes();
